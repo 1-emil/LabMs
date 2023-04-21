@@ -1,0 +1,129 @@
+services:
+
+  inventory-service:
+    # to find the Dockerfile
+    build: inventory-service
+    hostname: inventory-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      mysql1:
+        condition: service_healthy
+
+  api-gateway:
+    # to find the Dockerfile
+    build: api-gateway
+    hostname: api-gateway
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    ports:
+      - "8080:8080"
+    depends_on:
+      - inventory-service
+      - clients-service
+  employees-service:
+    # to find the Dockerfile
+    build: employees-service
+    hostname: employees-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      mysql2:
+        condition: service_healthy
+
+  clients-service:
+    # to find the Dockerfile
+    build: clients-service
+    hostname: clients-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      mysql3:
+        condition: service_healthy
+
+  mysql1:
+    image: mysql:5.7
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpwd
+      - MYSQL_DATABASE=inventory-db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+    # if we want to save data
+    volumes:
+      - ./data/mysql1:/var/lib/mysql1
+      - ./data/init.d:/docker-entrypoint-initdb.d
+    # sending commands to mysql container to see if it works
+    healthcheck:
+      test:
+        [
+            "CMD",
+            "mysqladmin",
+            "ping",
+            "-uuser",
+            "-ppwd",
+            "-h",
+            "localhost",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  mysql2:
+    image: mysql:5.7
+    ports:
+      - "3308:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpwd
+      - MYSQL_DATABASE=employees-db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+    # if we want to save data
+    volumes:
+      - ./data/mysql2:/var/lib/mysql2
+      - ./data/init.d:/docker-entrypoint-initdb.d
+    # sending commands to mysql container to see if it works
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-uuser",
+          "-ppwd",
+          "-h",
+          "localhost",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  mysql3:
+    image: mysql:5.7
+    ports:
+      - "3309:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpwd
+      - MYSQL_DATABASE=clients-db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+    # if we want to save data
+    volumes:
+      - ./data/mysql3:/var/lib/mysql3
+      - ./data/init.d:/docker-entrypoint-initdb.d
+    # sending commands to mysql container to see if it works
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-uuser",
+          "-ppwd",
+          "-h",
+          "localhost",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10

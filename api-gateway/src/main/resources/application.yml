@@ -1,0 +1,35 @@
+#Default spring profile
+server:
+  error:
+    include-message: always
+
+    logging:
+      level:
+        root: INFO
+        com.lab: DEBUG
+
+  app:
+    inventory-service:
+      host: localhost
+      port: 7001
+    clients-service:
+      host: localhost
+      port: 7002
+
+---
+
+  spring:
+    config:
+      activate:
+        on-profile: docker
+
+    server:
+        port: 8080
+
+        app:
+            inventory-service:
+                host: inventory-service
+                port: 8080
+            clients-service:
+                host: clients-service
+                port: 8080

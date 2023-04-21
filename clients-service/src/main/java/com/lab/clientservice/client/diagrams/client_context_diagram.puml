@@ -1,0 +1,24 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Context.puml
+title L2 diagram for Inventory Microservice
+Person(employee, "Employee", "An employee of the Electronics Store.")
+Boundary(Client_boundary, "Inventory microservice") {
+    System(system, "Electronics Store", "Allows the employees to check the information of the inventories and electronics from the store")
+    System(database, "InventoryDB", "Inventory and Electronics info stored here")
+    System(web, "Web Application", "Delivers the static content and the inventory microservice")
+    System(api, "API Application", "Provides inventory microservice functionality using JSON/HTTPS")
+
+}
+System(system, "Electronics Store", "Allows the employees to check the information of inventories and electronics from the store")
+System(database, "InventoryDB", "Inventory and Electronics info stored here")
+System(web, "Web Application", "Delivers the static content and the inventory microservice")
+System(api, "API Application", "Provides inventory microservice functionality using JSON/HTTPS")
+
+Rel(employee, system, "Views Inventory information")
+Rel(employee, web, "visits using https")
+Rel(system, api, "Makes API calls to")
+Rel(api, database, "Reads from and writes to using SQL")
+Rel(web, system, "Delivers the content to ")
+
+SHOW_LEGEND()
+@enduml

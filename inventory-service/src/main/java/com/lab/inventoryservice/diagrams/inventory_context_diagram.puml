@@ -1,0 +1,12 @@
+@startuml
+@startuml
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Context.puml
+title L1 diagram for Inventory Microservice
+Person(employee, "Employee", "An employee of the Electronics Store.")
+System(system, "Electronics Store", "Allow the employees to check the information of every Inventory and Electronics sold in the electronics store.")
+System(database, "InventoryDB", "Stores employee information.")
+
+Rel(employee, system, "Tracks inventory information")
+Rel(system, database, "Reads from and writes to", "SQL")
+SHOW_LEGEND()
+@enduml
